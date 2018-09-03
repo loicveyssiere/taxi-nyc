@@ -101,3 +101,76 @@ def heatmap(df, lat_col='latitude', lon_col='longitude', zoom_start=11, \
     curr_map.add_child(plugins.HeatMap(stations, radius=heat_map_radius))
 
     return curr_map
+
+def scatter_on_groups_2D(groups, x_selection, y_selection, group_names=None):
+    i = 0
+    data = []
+    for name, group in groups:
+        if (group_names != None):
+            display_name = group_names[i]
+        else:
+            display_name = name
+        data.append(go.Scatter(
+            x = group[x_selection],
+            y = group[y_selection],
+            mode = 'markers',
+            name = display_name,
+            hoverinfo='none'
+        ))
+        i+=1
+
+    layout = go.Layout(
+        xaxis= dict(
+            title= x_selection,
+            ticklen= 5,
+            zeroline= False,
+            gridwidth= 2,
+        ),
+        yaxis=dict(
+            title= y_selection,
+            ticklen= 5,
+            gridwidth= 2,
+        ),
+    )
+    fig = go.Figure(data=data, layout=layout)
+    plotly.offline.iplot(fig, filename='basic-scatter')
+
+def scatter_on_groups_3D(groups, x_selection, y_selection, z_selection, group_names=None):
+    data = []
+    i = 0
+    for name, group in groups:
+        if (group_names != None):
+            display_name = group_names[i]
+        else:
+            display_name = name
+        data.append(go.Scatter3d(
+            x=group[x_selection],
+            y=group[y_selection],
+            z=group[z_selection],
+            mode='markers',
+            name=display_name,
+            hoverinfo='none',
+            marker=dict(
+                size=5,
+                opacity=0.5
+            )
+        ))
+        i+=1
+
+    layout = go.Layout(
+        margin=dict(
+            l=0,
+            r=0,
+            b=0,
+            t=20
+        ), 
+        scene = dict(
+        xaxis = dict(
+            title=x_selection),
+        yaxis = dict(
+            title=y_selection),
+        zaxis = dict(
+            title=z_selection),),
+    )
+    fig = go.Figure(data=data, layout=layout)
+    plotly.offline.iplot(fig, filename='simple-3d-scatter')
